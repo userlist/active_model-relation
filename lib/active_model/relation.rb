@@ -57,6 +57,10 @@ module ActiveModel
       self
     end
 
+    def all
+      spawn
+    end
+
     def to_ary
       records.dup
     end
@@ -68,7 +72,27 @@ module ActiveModel
         .take(@limit || @records.size)
     end
 
+    def scoping
+      previous_scope = model.current_scope
+      model.current_scope = self
+      yield
+    ensure
+      model.current_scope = previous_scope
+    end
+
     private
+
+    def method_missing(...)
+      if model.respond_to?(...)
+        scoping { model.public_send(...) }
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(...)
+      super || model.respond_to?(...)
+    end
 
     def spawn
       clone

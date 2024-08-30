@@ -1,13 +1,30 @@
 # frozen_string_literal: true
 
 require 'active_model/relation'
+require 'active_model/relation/scoping'
+require 'active_model/relation/querying'
 
 class Project
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  include ActiveModel::Relation::Scoping
+  include ActiveModel::Relation::Querying
+
   attribute :id, :integer
   attribute :state, :string, default: :draft
+
+  def self.records
+    [
+      new(id: 1, state: 'draft'),
+      new(id: 2, state: 'running'),
+      new(id: 3, state: 'completed')
+    ]
+  end
+
+  def self.completed
+    where(state: 'completed')
+  end
 end
 
 RSpec.describe ActiveModel::Relation do
@@ -16,13 +33,7 @@ RSpec.describe ActiveModel::Relation do
   end
 
   let(:model_class) { Project }
-  let(:records) do
-    [
-      model_class.new(id: 1, state: 'draft'),
-      model_class.new(id: 2, state: 'running'),
-      model_class.new(id: 3, state: 'completed')
-    ]
-  end
+  let(:records) { Project.records }
 
   subject { described_class.new(model_class, records) }
 
@@ -95,6 +106,30 @@ RSpec.describe ActiveModel::Relation do
 
     it 'should limit the records' do
       expect(subject.limit(1)).to match_array(records[0..0])
+    end
+  end
+
+  describe '#all' do
+    it 'should return a new relation' do
+      expect(subject.all).to be_a(described_class)
+    end
+
+    it 'should return a new instance' do
+      expect(subject.all).not_to eq(subject)
+    end
+
+    it 'should return the same records' do
+      expect(subject.all).to match_array(subject)
+    end
+  end
+
+  describe 'model class methods' do
+    it 'should delegate methods to the model class' do
+      expect(subject.model_name).to eq(model_class.model_name)
+    end
+
+    it 'should apply the scope to the model class method' do
+      expect(subject.completed).to match_array([records[2]])
     end
   end
 end
