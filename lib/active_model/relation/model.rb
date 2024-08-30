@@ -6,9 +6,15 @@ module ActiveModel
       include ActiveModel::Relation::Scoping
       include ActiveModel::Relation::Querying
 
+      included do
+        class_attribute :records, instance_accessor: false
+      end
+
       module ClassMethods
         def load(records)
-          self.current_scope = ActiveModel::Relation.new(self, records)
+          self.records = records
+
+          all
         end
       end
     end
