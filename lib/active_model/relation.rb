@@ -3,6 +3,8 @@
 require 'active_model'
 
 module ActiveModel
+  class ModelNotFound < StandardError; end
+
   # = Active Model Relation
   class Relation
     include Enumerable
@@ -24,7 +26,8 @@ module ActiveModel
     def find(value)
       primary_key = model.try(:primary_key) || :id
 
-      records.find { |record| record.public_send(primary_key) == value }
+      model = records.find { |record| record.public_send(primary_key) == value }
+      model || raise_model_not_found_error
     end
 
     def find_by(...)
@@ -100,6 +103,10 @@ module ActiveModel
 
     def spawn
       clone
+    end
+
+    def raise_model_not_found_error
+      raise ModelNotFound
     end
   end
 end

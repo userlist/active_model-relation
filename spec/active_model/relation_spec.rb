@@ -25,8 +25,12 @@ RSpec.describe ActiveModel::Relation do
   end
 
   describe '#find' do
-    it 'should return the record by primary key' do
+    it 'should return the model by primary key' do
       expect(subject.find(1)).to eq(records[0])
+    end
+
+    it 'should raise an error if the model is not found' do
+      expect { subject.find(4) }.to raise_error(ActiveModel::ModelNotFound)
     end
   end
 
