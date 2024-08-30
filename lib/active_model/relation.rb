@@ -3,7 +3,15 @@
 require 'active_model'
 
 module ActiveModel
-  class ModelNotFound < StandardError; end
+  class ModelNotFound < StandardError
+    def initialize(message = nil, model = nil, primary_key = nil, id = nil)
+      @primary_key = primary_key
+      @model = model
+      @id = id
+
+      super(message)
+    end
+  end
 
   # = Active Model Relation
   class Relation
@@ -28,11 +36,11 @@ module ActiveModel
       @extending_values = []
     end
 
-    def find(value)
+    def find(id)
       primary_key = model.try(:primary_key) || :id
 
-      model = find_by(primary_key => value)
-      model || raise_model_not_found_error
+      find_by(primary_key => id) ||
+        raise(ModelNotFound.new("Couldn't find #{model} with '#{primary_key}'=#{id}", model, primary_key, id))
     end
 
     def find_by(attributes = {})
@@ -132,10 +140,6 @@ module ActiveModel
 
     def spawn
       clone
-    end
-
-    def raise_model_not_found_error
-      raise ModelNotFound
     end
   end
 end
