@@ -70,6 +70,21 @@ module ActiveModel
       self
     end
 
+    def extending(...)
+      spawn.extending!(...)
+    end
+
+    def extending!(*modules, &)
+      modules << Module.new(&) if block_given?
+      modules.flatten!
+
+      self.extending_values += modules
+
+      extend(*extending_values) if extending_values.any?
+
+      self
+    end
+
     def all
       spawn
     end
@@ -92,21 +107,6 @@ module ActiveModel
       yield
     ensure
       model.current_scope = previous_scope
-    end
-
-    def extending(...)
-      spawn.extending!(...)
-    end
-
-    def extending!(*modules, &)
-      modules << Module.new(&) if block_given?
-      modules.flatten!
-
-      self.extending_values += modules
-
-      extend(*extending_values) if extending_values.any?
-
-      self
     end
 
     def inspect
