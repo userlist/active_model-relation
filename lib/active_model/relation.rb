@@ -12,6 +12,7 @@ module ActiveModel
     autoload :Model, 'active_model/relation/model'
     autoload :Querying, 'active_model/relation/querying'
     autoload :Scoping, 'active_model/relation/scoping'
+    autoload :WhereClause, 'active_model/relation/where_clause'
 
     attr_reader :model
     attr_accessor :offset_value, :limit_value, :where_clause, :extending_values
@@ -21,7 +22,7 @@ module ActiveModel
     def initialize(model, records = [])
       @model = model
       @records = records
-      @where_clause = {}
+      @where_clause = WhereClause.new
       @offset_value = nil
       @limit_value = nil
       @extending_values = []
@@ -30,20 +31,24 @@ module ActiveModel
     def find(value)
       primary_key = model.try(:primary_key) || :id
 
-      model = records.find { |record| record.public_send(primary_key) == value }
+      model = find_by(primary_key => value)
       model || raise_model_not_found_error
     end
 
-    def find_by(...)
-      where(...).first
+    def find_by(attributes = {})
+      where_clause = self.where_clause + WhereClause.from_hash(attributes)
+
+      records.find(&where_clause)
     end
 
     def where(...)
       spawn.where!(...)
     end
 
-    def where!(attributes)
-      where_clause.merge!(attributes)
+    def where!(attributes = {}, &block)
+      self.where_clause += WhereClause.from_hash(attributes) if attributes.any?
+      self.where_clause += WhereClause.from_block(block) if block_given?
+
       self
     end
 
@@ -75,7 +80,7 @@ module ActiveModel
 
     def records
       @records
-        .select { |record| where_clause.all? { |key, value| record.public_send(key) == value } }
+        .select(&where_clause)
         .drop(offset_value || 0)
         .take(limit_value || @records.size)
     end
