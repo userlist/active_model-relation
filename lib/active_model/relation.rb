@@ -21,6 +21,7 @@ module ActiveModel
     autoload :Querying, 'active_model/relation/querying'
     autoload :Scoping, 'active_model/relation/scoping'
     autoload :WhereClause, 'active_model/relation/where_clause'
+    autoload :WhereChain, 'active_model/relation/where_chain'
 
     attr_reader :model
     attr_accessor :offset_value, :limit_value, :where_clause, :extending_values
@@ -54,6 +55,8 @@ module ActiveModel
     end
 
     def where!(attributes = {}, &block)
+      return WhereChain.new(spawn) unless attributes.any? || block_given?
+
       self.where_clause += WhereClause.from_hash(attributes) if attributes.any?
       self.where_clause += WhereClause.from_block(block) if block_given?
 

@@ -3,7 +3,17 @@ module ActiveModel
     class WhereClause
       attr_reader :predicates
 
-      class EqualsPredicate
+      class Predicate
+        def call(record)
+          raise NotImplementedError
+        end
+
+        def invert
+          NotPredicate.new(self)
+        end
+      end
+
+      class EqualsPredicate < Predicate
         attr_reader :attribute, :value
 
         def initialize(attribute, value)
@@ -16,12 +26,40 @@ module ActiveModel
         end
       end
 
+      class BlockPredicate < Predicate
+        attr_reader :block
+
+        def initialize(block)
+          @block = block
+        end
+
+        def call(record)
+          block.call(record)
+        end
+      end
+
+      class NotPredicate < Predicate
+        attr_reader :predicate
+
+        def initialize(predicate)
+          @predicate = predicate
+        end
+
+        def call(record)
+          !predicate.call(record)
+        end
+
+        def invert
+          predicate
+        end
+      end
+
       def self.from_hash(attributes = {})
         new(attributes.map { |attribute, value| EqualsPredicate.new(attribute, value) })
       end
 
       def self.from_block(block)
-        new(block)
+        new(BlockPredicate.new(block))
       end
 
       def initialize(*predicates)
@@ -34,6 +72,10 @@ module ActiveModel
 
       def call(record)
         predicates.all? { |predicate| predicate.call(record) }
+      end
+
+      def invert
+        WhereClause.new(predicates.map(&:invert))
       end
 
       def to_proc
