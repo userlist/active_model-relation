@@ -9,18 +9,22 @@ module ActiveModel
   class Relation
     include Enumerable
 
-    attr_reader :model
-
-    delegate :each, :size, :last, to: :records
-
     autoload :Model, 'active_model/relation/model'
     autoload :Querying, 'active_model/relation/querying'
     autoload :Scoping, 'active_model/relation/scoping'
+
+    attr_reader :model
+    attr_accessor :offset_value, :limit_value, :where_clause, :extending_values
+
+    delegate :each, :size, :last, to: :records
 
     def initialize(model, records = [])
       @model = model
       @records = records
       @where_clause = {}
+      @offset_value = nil
+      @limit_value = nil
+      @extending_values = []
     end
 
     def find(value)
@@ -39,8 +43,7 @@ module ActiveModel
     end
 
     def where!(attributes)
-      @where_clause.merge!(attributes)
-
+      where_clause.merge!(attributes)
       self
     end
 
@@ -49,8 +52,7 @@ module ActiveModel
     end
 
     def offset!(offset)
-      @offset = offset
-
+      self.offset_value = offset
       self
     end
 
@@ -59,8 +61,7 @@ module ActiveModel
     end
 
     def limit!(limit)
-      @limit = limit
-
+      self.limit_value = limit
       self
     end
 
@@ -74,9 +75,9 @@ module ActiveModel
 
     def records
       @records
-        .select { |record| @where_clause.all? { |key, value| record.public_send(key) == value } }
-        .drop(@offset || 0)
-        .take(@limit || @records.size)
+        .select { |record| where_clause.all? { |key, value| record.public_send(key) == value } }
+        .drop(offset_value || 0)
+        .take(limit_value || @records.size)
     end
 
     def scoping
@@ -85,6 +86,21 @@ module ActiveModel
       yield
     ensure
       model.current_scope = previous_scope
+    end
+
+    def extending(...)
+      spawn.extending!(...)
+    end
+
+    def extending!(*modules, &)
+      modules << Module.new(&) if block_given?
+      modules.flatten!
+
+      self.extending_values += modules
+
+      extend(*extending_values) if extending_values.any?
+
+      self
     end
 
     private
