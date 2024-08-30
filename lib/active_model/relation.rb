@@ -77,6 +77,7 @@ module ActiveModel
     def to_ary
       records.dup
     end
+    alias to_a to_ary
 
     def records
       @records
