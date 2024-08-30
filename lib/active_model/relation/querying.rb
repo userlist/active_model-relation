@@ -4,7 +4,7 @@ module ActiveModel
       extend ActiveSupport::Concern
 
       module ClassMethods
-        delegate :where, :find, :find_by, :offset, :limit, to: :all
+        delegate :where, :find, :find_by, :offset, :limit, :first, :last, to: :all
 
         def all
           current_scope || ActiveModel::Relation.new(self, records)
