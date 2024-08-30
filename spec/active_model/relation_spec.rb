@@ -1,31 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_model/relation'
-require 'active_model/relation/scoping'
-require 'active_model/relation/querying'
-
-class Project
-  include ActiveModel::Model
-  include ActiveModel::Attributes
-
-  include ActiveModel::Relation::Scoping
-  include ActiveModel::Relation::Querying
-
-  attribute :id, :integer
-  attribute :state, :string, default: :draft
-
-  def self.records
-    [
-      new(id: 1, state: 'draft'),
-      new(id: 2, state: 'running'),
-      new(id: 3, state: 'completed')
-    ]
-  end
-
-  def self.completed
-    where(state: 'completed')
-  end
-end
+require 'spec_helper'
 
 RSpec.describe ActiveModel::Relation do
   it 'has a version number' do
@@ -33,9 +8,15 @@ RSpec.describe ActiveModel::Relation do
   end
 
   let(:model_class) { Project }
-  let(:records) { Project.records }
+  let(:records) do
+    [
+      Project.new(id: 1, state: 'draft'),
+      Project.new(id: 2, state: 'running'),
+      Project.new(id: 3, state: 'completed')
+    ]
+  end
 
-  subject { described_class.new(model_class, records) }
+  subject { Project.load(records) }
 
   describe '#model' do
     it 'should return the model class' do

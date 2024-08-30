@@ -11,6 +11,10 @@ module ActiveModel
 
     delegate :each, :size, :last, to: :records
 
+    autoload :Model, 'active_model/relation/model'
+    autoload :Querying, 'active_model/relation/querying'
+    autoload :Scoping, 'active_model/relation/scoping'
+
     def initialize(model, records = [])
       @model = model
       @records = records
