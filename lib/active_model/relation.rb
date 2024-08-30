@@ -108,6 +108,13 @@ module ActiveModel
       self
     end
 
+    def inspect
+      entries = records.take(11).map!(&:inspect)
+      entries[10] = '...' if entries.size == 11
+
+      "#<#{self.class.name} [#{entries.join(', ')}]>"
+    end
+
     private
 
     def method_missing(...)
