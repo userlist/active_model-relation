@@ -62,6 +62,13 @@ module ActiveModel
         new(BlockPredicate.new(block))
       end
 
+      def self.build(attributes = {}, &block)
+        where_clause = new
+        where_clause += from_hash(attributes) if attributes.any?
+        where_clause += from_block(block) if block_given?
+        where_clause
+      end
+
       def initialize(*predicates)
         @predicates = predicates.flatten(1)
       end

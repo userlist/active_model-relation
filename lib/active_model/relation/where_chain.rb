@@ -7,11 +7,8 @@ module ActiveModel
         @relation = relation
       end
 
-      def not(attributes = {}, &block)
-        where_clause = WhereClause.from_hash(attributes)
-        where_clause += WhereClause.from_block(block) if block_given?
-
-        relation.where_clause += where_clause.invert
+      def not(...)
+        relation.where_clause += WhereClause.build(...).invert
         relation
       end
     end

@@ -54,12 +54,10 @@ module ActiveModel
       spawn.where!(...)
     end
 
-    def where!(attributes = {}, &block)
+    def where!(attributes = {}, &)
       return WhereChain.new(spawn) unless attributes.any? || block_given?
 
-      self.where_clause += WhereClause.from_hash(attributes) if attributes.any?
-      self.where_clause += WhereClause.from_block(block) if block_given?
-
+      self.where_clause += WhereClause.build(attributes, &)
       self
     end
 
