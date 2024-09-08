@@ -9,6 +9,10 @@ module ActiveModel
         def all
           current_scope || ActiveModel::Relation.new(self, records)
         end
+
+        def records
+          raise NotImplementedError
+        end
       end
     end
   end

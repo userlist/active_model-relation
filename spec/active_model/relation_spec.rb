@@ -17,7 +17,7 @@ RSpec.describe ActiveModel::Relation do
     ]
   end
 
-  subject { Project.load(records) }
+  subject { described_class.new(model_class, records) }
 
   describe '#model' do
     it 'should return the model class' do
