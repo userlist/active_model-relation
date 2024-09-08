@@ -12,7 +12,8 @@ RSpec.describe ActiveModel::Relation do
     [
       Project.new(id: 1, state: 'draft'),
       Project.new(id: 2, state: 'running'),
-      Project.new(id: 3, state: 'completed')
+      Project.new(id: 3, state: 'completed'),
+      Project.new(id: 4, state: 'completed')
     ]
   end
 
@@ -30,7 +31,7 @@ RSpec.describe ActiveModel::Relation do
     end
 
     it 'should raise an error if the model is not found' do
-      expect { subject.find(4) }.to raise_error(ActiveModel::ModelNotFound)
+      expect { subject.find(-1) }.to raise_error(ActiveModel::ModelNotFound)
     end
   end
 
@@ -42,12 +43,12 @@ RSpec.describe ActiveModel::Relation do
 
   describe '#size' do
     it 'should return the number of records' do
-      expect(subject.size).to eq(3)
+      expect(subject.size).to eq(4)
     end
 
     context 'when the records are filtered' do
       it 'should return the number of filtered records' do
-        expect(subject.where(state: 'completed').size).to eq(1)
+        expect(subject.where(state: 'completed').size).to eq(2)
       end
     end
   end
@@ -62,7 +63,61 @@ RSpec.describe ActiveModel::Relation do
     end
 
     it 'should filter the records' do
-      expect(subject.where(state: 'completed')).to match_array([records[2]])
+      expect(subject.where(state: 'completed')).to match_array(records[2..4])
+    end
+
+    it 'should filter the records with multiple conditions' do
+      expect(subject.where(state: 'completed', id: 1)).to match_array([])
+    end
+
+    it 'should filter the records with a block' do
+      expect(subject.where { |record| record.state == 'completed' }).to match_array(records[2..3])
+    end
+  end
+
+  describe '#where.not' do
+    it 'should return a new relation' do
+      expect(subject.where.not(state: 'completed')).to be_a(described_class)
+    end
+
+    it 'should return a new instance' do
+      expect(subject.where.not(state: 'completed')).not_to eq(subject)
+    end
+
+    it 'should filter the records' do
+      expect(subject.where.not(state: 'completed')).to match_array(records[0..1])
+    end
+
+    it 'should filter the records with multiple conditions' do
+      expect(subject.where.not(state: 'completed', id: 3)).to match_array(records[0..1])
+    end
+
+    it 'should filter the records with a block' do
+      expect(subject.where.not { |record| record.state == 'completed' }).to match_array(records[0..1])
+    end
+  end
+
+  describe '#first' do
+    it 'should return the first record' do
+      expect(subject.first).to eq(records[0])
+    end
+
+    context 'when the records are filtered' do
+      it 'should return the first filtered record' do
+        expect(subject.where(state: 'completed').first).to eq(records[2])
+      end
+    end
+  end
+
+  describe '#last' do
+    it 'should return the last record' do
+      expect(subject.last).to eq(records[3])
+    end
+
+    context 'when the records are filtered' do
+      it 'should return the last filtered record' do
+        expect(subject.where(state: 'completed').last).to eq(records[3])
+      end
     end
   end
 
@@ -76,7 +131,7 @@ RSpec.describe ActiveModel::Relation do
     end
 
     it 'should offset the records' do
-      expect(subject.offset(1)).to match_array(records[1..2])
+      expect(subject.offset(1)).to match_array(records[1..3])
     end
   end
 
@@ -114,7 +169,7 @@ RSpec.describe ActiveModel::Relation do
     end
 
     it 'should apply the scope to the model class method' do
-      expect(subject.completed).to match_array([records[2]])
+      expect(subject.completed).to match_array(records[2..3])
     end
   end
 end
