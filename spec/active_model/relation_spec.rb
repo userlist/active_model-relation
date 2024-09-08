@@ -163,6 +163,32 @@ RSpec.describe ActiveModel::Relation do
     end
   end
 
+  describe '#extending' do
+    let(:extension) do
+      Module.new do
+        def doubled_size
+          size * 2
+        end
+      end
+    end
+
+    it 'should return a new relation' do
+      expect(subject.extending(extension)).to be_a(described_class)
+    end
+
+    it 'should return a new instance' do
+      expect(subject.extending(extension)).not_to eq(subject)
+    end
+
+    it 'should extend the relation' do
+      expect(subject.extending(extension).doubled_size).to eq(8)
+    end
+
+    it 'should extend the relation with a block' do
+      expect(subject.extending { def tripled_size = size * 3 }.tripled_size).to eq(12)
+    end
+  end
+
   describe 'model class methods' do
     it 'should delegate methods to the model class' do
       expect(subject.model_name).to eq(model_class.model_name)
