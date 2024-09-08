@@ -17,6 +17,8 @@ module ActiveModel
         attr_reader :attribute, :value
 
         def initialize(attribute, value)
+          super()
+
           @attribute = attribute
           @value = value
         end
@@ -30,6 +32,8 @@ module ActiveModel
         attr_reader :block
 
         def initialize(block)
+          super()
+
           @block = block
         end
 
@@ -42,6 +46,8 @@ module ActiveModel
         attr_reader :predicate
 
         def initialize(predicate)
+          super()
+
           @predicate = predicate
         end
 
