@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Project
   include ActiveModel::Model
   include ActiveModel::Attributes
