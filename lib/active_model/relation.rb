@@ -4,7 +4,7 @@ require 'active_model'
 
 module ActiveModel
   class ModelNotFound < StandardError
-    def initialize(message = nil, model = nil, primary_key = nil, id = nil)
+    def initialize(message = nil, model = nil, primary_key = nil, id = nil) # rubocop:disable Metrics/ParameterLists
       @primary_key = primary_key
       @model = model
       @id = id
