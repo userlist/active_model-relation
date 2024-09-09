@@ -10,10 +10,10 @@ RSpec.describe ActiveModel::Relation do
   let(:model_class) { Project }
   let(:records) do
     [
-      Project.new(id: 1, state: 'draft'),
-      Project.new(id: 2, state: 'running'),
-      Project.new(id: 3, state: 'completed'),
-      Project.new(id: 4, state: 'completed')
+      Project.new(id: 1, state: 'draft', priority: 1),
+      Project.new(id: 2, state: 'running', priority: 2),
+      Project.new(id: 3, state: 'completed', priority: 3),
+      Project.new(id: 4, state: 'completed', priority: 1)
     ]
   end
 
@@ -232,6 +232,28 @@ RSpec.describe ActiveModel::Relation do
 
     it 'should keep only the limit value' do
       expect(subject.limit(1).only(:limit)).to match_array(records[0..0])
+    end
+  end
+
+  describe '#order' do
+    it 'should return a new relation' do
+      expect(subject.order(:priority)).to be_a(described_class)
+    end
+
+    it 'should return a new instance' do
+      expect(subject.order(:priority)).not_to eq(subject)
+    end
+
+    it 'should order the records' do
+      expect(subject.order(:priority)).to match_array(records.sort_by(&:priority))
+    end
+
+    it 'should order the records in descending order' do
+      expect(subject.order(priority: :desc)).to match_array(records.sort_by(&:priority).reverse)
+    end
+
+    it 'should order the records with multiple attributes' do
+      expect(subject.order(priority: :desc, state: :asc)).to match_array(records.sort_by { |r| [-r.priority, r.state] })
     end
   end
 

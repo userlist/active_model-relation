@@ -7,6 +7,7 @@ class Project
 
   attribute :id, :integer
   attribute :state, :string, default: :draft
+  attribute :priority, :integer, default: 1
 
   def self.completed
     where(state: 'completed')

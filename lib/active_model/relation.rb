@@ -22,9 +22,10 @@ module ActiveModel
     autoload :Scoping, 'active_model/relation/scoping'
     autoload :WhereClause, 'active_model/relation/where_clause'
     autoload :WhereChain, 'active_model/relation/where_chain'
+    autoload :OrderClause, 'active_model/relation/order_clause'
 
     attr_reader :model
-    attr_accessor :offset_value, :limit_value, :where_clause, :extending_values
+    attr_accessor :offset_value, :limit_value, :where_clause, :order_clause, :extending_values
 
     delegate :each, :size, :last, to: :records
 
@@ -32,6 +33,7 @@ module ActiveModel
       @model = model
       @records = records
       @where_clause = WhereClause.new
+      @order_clause = OrderClause.new
       @offset_value = nil
       @limit_value = nil
       @extending_values = []
@@ -79,6 +81,15 @@ module ActiveModel
       self
     end
 
+    def order(...)
+      spawn.order!(...)
+    end
+
+    def order!(*values)
+      self.order_clause += OrderClause.build(values)
+      self
+    end
+
     def extending(...)
       spawn.extending!(...)
     end
@@ -106,6 +117,7 @@ module ActiveModel
     def records
       @records
         .select(&where_clause)
+        .sort(&order_clause)
         .drop(offset_value || 0)
         .take(limit_value || @records.size)
     end
