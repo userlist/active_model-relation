@@ -28,13 +28,27 @@ relation = ActiveModel::Relation.new(Project, [
 Afterwards you can use it (almost) like an `ActiveRecord::Relation`.
 
 ```ruby
+relation.find(1)
+relation.find_by(state: 'draft')
 relation.where(state: 'completed')
+relation.where.not(state: 'draft')
 relation.offset(3)
 relation.limit(2)
+relation.order(:priority)
 relation.order(priority: :asc, state: :desc)
+relation.extending(Pagination)
+relation.only(:where)
+relation.except(:limit, :offset)
 ```
 
-You can also write named filter methods on the model class, after including `ActiveModel::Relation::Model`.
+It's also possible to use method calls for filtering, while still returning a `ActiveModel::Relation`.
+
+```ruby
+relation.where { |project| project.completed? }
+relation.where.not { |project| project.draft? }
+```
+
+After including `ActiveModel::Relation::Model`, the library also supports named scope methods on the model class.
 
 ```ruby
 class Project
@@ -50,6 +64,8 @@ class Project
     where(state: 'completed')
   end
 end
+
+relation.completed
 ```
 
 ## Development
