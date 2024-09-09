@@ -10,20 +10,16 @@ module ActiveModel
           @name = name
         end
 
-        def call(_, _)
-          0
-        end
-      end
-
-      class Ascending < OrderExpression
         def call(record, other)
           record.public_send(name) <=> other.public_send(name)
         end
       end
 
+      class Ascending < OrderExpression; end
+
       class Descending < OrderExpression
         def call(record, other)
-          other.public_send(name) <=> record.public_send(name)
+          super(other, record)
         end
       end
 
