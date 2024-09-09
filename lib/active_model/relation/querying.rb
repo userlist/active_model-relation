@@ -9,11 +9,7 @@ module ActiveModel
         delegate :where, :find, :find_by, :offset, :limit, :first, :last, to: :all
 
         def all
-          current_scope || ActiveModel::Relation.new(self, records)
-        end
-
-        def records
-          raise NotImplementedError
+          current_scope || ActiveModel::Relation.new(self)
         end
       end
     end

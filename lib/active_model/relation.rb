@@ -29,7 +29,7 @@ module ActiveModel
 
     delegate :each, :size, :last, to: :records
 
-    def initialize(model, records = [])
+    def initialize(model, records = model.try(:records) || [])
       @model = model
       @records = records
       @where_clause = WhereClause.new
