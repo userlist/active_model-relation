@@ -3,8 +3,6 @@
 module ActiveModel
   class Relation
     class WhereClause
-      attr_reader :predicates
-
       class Predicate
         def call(record)
           raise NotImplementedError
@@ -62,6 +60,8 @@ module ActiveModel
         end
       end
 
+      attr_reader :predicates
+
       def self.from_hash(attributes = {})
         new(attributes.map { |attribute, value| EqualsPredicate.new(attribute, value) })
       end
@@ -94,7 +94,7 @@ module ActiveModel
       end
 
       def to_proc
-        ->(record) { call(record) }
+        method(:call).to_proc
       end
     end
   end
