@@ -1,6 +1,6 @@
 # ActiveModel::Relation
 
-This library allows querying of collections of Ruby objects, with a similar interfaces to `ActiveRecord::Relation`.
+A library that allows querying of collections of Ruby objects, with a similar interface to `ActiveRecord::Relation`.
 
 ## Installation
 
