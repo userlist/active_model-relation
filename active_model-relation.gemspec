@@ -9,7 +9,8 @@ Gem::Specification.new do |spec|
   spec.email = ['benedikt@benediktdeicke.com']
 
   spec.summary = 'Query collection of ActiveModel objects like an ActiveRecord::Relation'
-  spec.description = 'Query collection of ActiveModel objects like an ActiveRecord::Relation'
+  spec.description = 'This library allows querying of collections of Ruby objects, with a similar interface ' \
+                     'to ActiveRecord::Relation.'
   spec.homepage = 'https://github.com/benedikt/active_model-relation/'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.0'
@@ -32,7 +33,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activemodel', '~> 7.2'
 
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
   spec.metadata['rubygems_mfa_required'] = 'true'
 end

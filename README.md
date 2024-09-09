@@ -1,8 +1,6 @@
 # ActiveModel::Relation
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/active_model/relation`. To experiment with that code, run `bin/console` for an interactive prompt.
+This library allows querying of collections of Ruby objects, with a similar interfaces to `ActiveRecord::Relation`.
 
 ## Installation
 
@@ -16,7 +14,43 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-TODO: Write usage instructions here
+Create a new relation by passing the model class and a collection:
+
+```ruby
+relation = ActiveModel::Relation.new(Project, [
+  Project.new(id: 1, state: 'draft', priority: 1),
+  Project.new(id: 2, state: 'running', priority: 2),
+  Project.new(id: 3, state: 'completed', priority: 3),
+  Project.new(id: 4, state: 'completed', priority: 1)
+])
+```
+
+Afterwards you can use it (almost) like an `ActiveRecord::Relation`.
+
+```ruby
+relation.where(state: 'completed')
+relation.offset(3)
+relation.limit(2)
+relation.order(priority: :asc, state: :desc)
+```
+
+You can also write named filter methods on the model class, after including `ActiveModel::Relation::Model`.
+
+```ruby
+class Project
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveModel::Relation::Model
+
+  attribute :id, :integer
+  attribute :state, :string, default: :draft
+  attribute :priority, :integer, default: 1
+
+  def self.completed
+    where(state: 'completed')
+  end
+end
+```
 
 ## Development
 
