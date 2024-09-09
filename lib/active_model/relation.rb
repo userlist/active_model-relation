@@ -14,7 +14,7 @@ module ActiveModel
   end
 
   # = Active Model Relation
-  class Relation
+  class Relation # rubocop:disable Metrics/ClassLength
     include Enumerable
 
     autoload :Model, 'active_model/relation/model'
