@@ -125,6 +125,14 @@ module ActiveModel
       "#<#{self.class.name} [#{entries.join(', ')}]>"
     end
 
+    def except(*skips)
+      relation_with(values.except(*skips))
+    end
+
+    def only(*keeps)
+      relation_with(values.slice(*keeps))
+    end
+
     private
 
     def method_missing(...)
@@ -141,6 +149,22 @@ module ActiveModel
 
     def spawn
       clone
+    end
+
+    def values
+      {
+        where: where_clause,
+        offset: offset_value,
+        limit: limit_value
+      }
+    end
+
+    def relation_with(values)
+      spawn.tap do |relation|
+        relation.where_clause = values[:where] || WhereClause.new
+        relation.offset_value = values[:offset]
+        relation.limit_value = values[:limit]
+      end
     end
   end
 end

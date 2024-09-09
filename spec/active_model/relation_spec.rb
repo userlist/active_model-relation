@@ -189,6 +189,52 @@ RSpec.describe ActiveModel::Relation do
     end
   end
 
+  describe '#except' do
+    it 'should return a new relation' do
+      expect(subject.except(:where)).to be_a(described_class)
+    end
+
+    it 'should return a new instance' do
+      expect(subject.except(:where)).not_to eq(subject)
+    end
+
+    it 'should remove the where values' do
+      expect(subject.where(state: 'completed').except(:where)).to match_array(records)
+    end
+
+    it 'should remove the offset value' do
+      expect(subject.offset(1).except(:offset)).to match_array(records)
+    end
+
+    it 'should remove the limit value' do
+      expect(subject.limit(1).except(:limit)).to match_array(records)
+    end
+  end
+
+  describe '#only' do
+    subject { super().where(state: 'completed').offset(1).limit(1) }
+
+    it 'should return a new relation' do
+      expect(subject.only(:where)).to be_a(described_class)
+    end
+
+    it 'should return a new instance' do
+      expect(subject.only(:where)).not_to eq(subject)
+    end
+
+    it 'should keep only the where values' do
+      expect(subject.where(state: 'completed').only(:where)).to match_array(records[2..3])
+    end
+
+    it 'should keep only the offset value' do
+      expect(subject.offset(1).only(:offset)).to match_array(records[1..3])
+    end
+
+    it 'should keep only the limit value' do
+      expect(subject.limit(1).only(:limit)).to match_array(records[0..0])
+    end
+  end
+
   describe 'model class methods' do
     it 'should delegate methods to the model class' do
       expect(subject.model_name).to eq(model_class.model_name)
