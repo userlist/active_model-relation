@@ -50,7 +50,7 @@ module ActiveModel
     end
 
     def find_by(attributes = {})
-      where_clause = self.where_clause + WhereClause.from_hash(attributes)
+      where_clause = self.where_clause + WhereClause.from_hash(type_cast_values(attributes))
 
       records.find(&where_clause)
     end
@@ -62,7 +62,7 @@ module ActiveModel
     def where!(attributes = {}, &)
       return WhereChain.new(spawn) unless attributes.any? || block_given?
 
-      self.where_clause += WhereClause.build(attributes, &)
+      self.where_clause += WhereClause.build(type_cast_values(attributes), &)
       self
     end
 
@@ -179,6 +179,15 @@ module ActiveModel
         relation.where_clause = values[:where] || WhereClause.new
         relation.offset_value = values[:offset]
         relation.limit_value = values[:limit]
+      end
+    end
+
+    def type_cast_values(attributes)
+      attributes.to_h do |key, value|
+        type = model.try(:type_for_attribute, key)
+        value = type.cast(value) if type
+
+        [key, value]
       end
     end
   end

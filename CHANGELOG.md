@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 - Treat `ActiveModel::RecordNotFound` like `ActiveRecord::RecordNotFound` in `ActionDispatch`
+- Properly type cast values when they are defined as attribute
 
 ## [0.2.0] - 2024-09-16
 

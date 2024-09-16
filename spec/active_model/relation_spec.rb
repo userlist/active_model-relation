@@ -38,6 +38,10 @@ RSpec.describe ActiveModel::Relation do
       expect(subject.find { |record| record.id == 1 }).to eq(records[0])
     end
 
+    it 'should type cast the given value' do
+      expect(subject.find('1')).to eq(records[0])
+    end
+
     it 'should use the given primary key' do
       allow(Project).to receive(:primary_key).and_return(:identifier)
 
@@ -52,6 +56,14 @@ RSpec.describe ActiveModel::Relation do
 
     it 'should return nil if the record is not found' do
       expect(subject.find_by(state: 'paused')).to be_nil
+    end
+
+    it 'should cast the attribute values' do
+      expect(subject.find_by(id: '1')).to eq(records[0])
+    end
+
+    it 'should allow filtering by arbitrary methods' do
+      expect(subject.find_by(identifier: 'project-1')).to eq(records[0])
     end
   end
 
@@ -86,6 +98,14 @@ RSpec.describe ActiveModel::Relation do
 
     it 'should filter the records with a block' do
       expect(subject.where { |record| record.state == 'completed' }).to match_array(records[2..3])
+    end
+
+    it 'should cast the attribute values' do
+      expect(subject.where(priority: '1')).to match_array([records[0], records[3]])
+    end
+
+    it 'should allow filtering by arbitrary methods' do
+      expect(subject.where(identifier: 'project-1')).to match_array([records[0]])
     end
   end
 
