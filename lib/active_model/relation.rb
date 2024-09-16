@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_model'
+require_relative 'relation/railtie' if defined?(Rails::Railtie)
 
 module ActiveModel
   class RecordNotFound < StandardError

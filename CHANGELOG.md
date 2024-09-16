@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Treat `ActiveModel::RecordNotFound` like `ActiveRecord::RecordNotFound` in `ActionDispatch`
+
 ## [0.2.0] - 2024-09-16
 
 - Rename `ActiveModel::ModelNotFound` to `ActiveModel::RecordNotFound`
