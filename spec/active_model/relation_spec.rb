@@ -31,7 +31,7 @@ RSpec.describe ActiveModel::Relation do
     end
 
     it 'should raise an error if the model is not found' do
-      expect { subject.find(-1) }.to raise_error(ActiveModel::ModelNotFound)
+      expect { subject.find(-1) }.to raise_error(ActiveModel::RecordNotFound)
     end
   end
 

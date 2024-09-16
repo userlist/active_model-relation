@@ -3,7 +3,7 @@
 require 'active_model'
 
 module ActiveModel
-  class ModelNotFound < StandardError
+  class RecordNotFound < StandardError
     def initialize(message = nil, model = nil, primary_key = nil, id = nil) # rubocop:disable Metrics/ParameterLists
       @primary_key = primary_key
       @model = model
@@ -43,7 +43,7 @@ module ActiveModel
       primary_key = model.try(:primary_key) || :id
 
       find_by(primary_key => id) ||
-        raise(ModelNotFound.new("Couldn't find #{model} with '#{primary_key}'=#{id}", model, primary_key, id))
+        raise(RecordNotFound.new("Couldn't find #{model} with '#{primary_key}'=#{id}", model, primary_key, id))
     end
 
     def find_by(attributes = {})
