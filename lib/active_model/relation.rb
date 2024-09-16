@@ -39,7 +39,9 @@ module ActiveModel
       @extending_values = []
     end
 
-    def find(id)
+    def find(id = nil, &)
+      return records.find(id, &) if block_given?
+
       primary_key = model.try(:primary_key) || :id
 
       find_by(primary_key => id) ||

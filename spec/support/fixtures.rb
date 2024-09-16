@@ -12,4 +12,8 @@ class Project
   def self.completed
     where(state: 'completed')
   end
+
+  def identifier
+    "project-#{id}"
+  end
 end

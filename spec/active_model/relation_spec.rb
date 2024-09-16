@@ -33,11 +33,25 @@ RSpec.describe ActiveModel::Relation do
     it 'should raise an error if the model is not found' do
       expect { subject.find(-1) }.to raise_error(ActiveModel::RecordNotFound)
     end
+
+    it 'should allow passing a block' do
+      expect(subject.find { |record| record.id == 1 }).to eq(records[0])
+    end
+
+    it 'should use the given primary key' do
+      allow(Project).to receive(:primary_key).and_return(:identifier)
+
+      expect(subject.find('project-1')).to eq(records[0])
+    end
   end
 
   describe '#find_by' do
     it 'should return the record matching the given attributes' do
       expect(subject.find_by(state: 'running')).to eq(records[1])
+    end
+
+    it 'should return nil if the record is not found' do
+      expect(subject.find_by(state: 'paused')).to be_nil
     end
   end
 
