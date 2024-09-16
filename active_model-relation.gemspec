@@ -8,16 +8,16 @@ Gem::Specification.new do |spec|
   spec.authors = ['Benedikt Deicke']
   spec.email = ['benedikt@benediktdeicke.com']
 
-  spec.summary = 'Query collection of ActiveModel objects like an ActiveRecord::Relation'
+  spec.summary = 'Query collections of ActiveModel objects like an ActiveRecord::Relation'
   spec.description = 'This library allows querying of collections of Ruby objects, with a similar interface ' \
                      'to ActiveRecord::Relation.'
-  spec.homepage = 'https://github.com/benedikt/active_model-relation/'
+  spec.homepage = 'https://github.com/userlist/active_model-relation/'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/benedikt/active_model-relation/'
-  spec.metadata['changelog_uri'] = 'https://github.com/benedikt/active_model-relation/blob/main/CHANGELOG.md'
+  spec.metadata['source_code_uri'] = 'https://github.com/userlist/active_model-relation/'
+  spec.metadata['changelog_uri'] = 'https://github.com/userlist/active_model-relation/blob/main/CHANGELOG.md'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
