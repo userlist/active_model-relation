@@ -257,6 +257,10 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/userlist/active_model-relation. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/userlist/active_model-relation/blob/main/CODE_OF_CONDUCT.md).
 
+## Acknowledgements
+
+This library is _heavily_ inspired by [`ActiveRecord::Relation`](https://github.com/rails/rails/blob/main/activerecord/lib/active_record/relation.rb) and uses similar patterns and implementations in various parts.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
