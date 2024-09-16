@@ -2,7 +2,7 @@
 
 ## [0.2.0] - 2024-09-16
 
-- Rename `ActiveModel::Relation::ModelNotFound` to `ActiveModel::Relation::RecordNotFound`
+- Rename `ActiveModel::ModelNotFound` to `ActiveModel::RecordNotFound`
 - Allow creating a `ActiveModel::Relation` without passing a collection
 - Don't require a `.records` class method on model classes
 - Allow passing a block to `ActiveModel::Relation#find`

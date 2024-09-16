@@ -51,7 +51,7 @@ An `ActiveModel::Relation` can be queried almost exactly like an `ActiveRecord::
 
 #### `#find`
 
-You can look up a record by it's primary key, using the `find` method. If no record is found, it will raise a `ActiveModel::Relation::RecordNotFound` error.
+You can look up a record by it's primary key, using the `find` method. If no record is found, it will raise a `ActiveModel::RecordNotFound` error.
 
 ```ruby
 project = relation.find(1)
