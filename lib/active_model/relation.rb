@@ -30,9 +30,9 @@ module ActiveModel
 
     delegate :each, :size, :last, to: :records
 
-    def initialize(model, records = model.try(:records) || [])
+    def initialize(model, records = model.try(:records))
       @model = model
-      @records = records
+      @records = records || []
       @where_clause = WhereClause.new
       @order_clause = OrderClause.new
       @offset_value = nil

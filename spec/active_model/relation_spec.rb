@@ -19,6 +19,22 @@ RSpec.describe ActiveModel::Relation do
 
   subject { described_class.new(model_class, records) }
 
+  describe '#initialize' do
+    it 'should default to an empty array when no records are given' do
+      expect(described_class.new(model_class, nil).to_a).to eq([])
+    end
+
+    it 'should default to an empty array when the model does not respond to records' do
+      expect(described_class.new(model_class).to_a).to eq([])
+    end
+
+    it 'should attempt to load the records from the model' do
+      allow(model_class).to receive(:records).and_return(records)
+
+      expect(described_class.new(model_class).to_a).to eq(records)
+    end
+  end
+
   describe '#model' do
     it 'should return the model class' do
       expect(subject.model).to eq(model_class)

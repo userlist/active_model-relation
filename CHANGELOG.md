@@ -2,6 +2,7 @@
 
 - Treat `ActiveModel::RecordNotFound` like `ActiveRecord::RecordNotFound` in `ActionDispatch`
 - Properly type cast values when they are defined as attribute
+- Ensure that there is always at least an empty array of records
 
 ## [0.2.0] - 2024-09-16
 
