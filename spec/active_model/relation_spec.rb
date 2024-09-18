@@ -20,18 +20,38 @@ RSpec.describe ActiveModel::Relation do
   subject { described_class.new(model_class, records) }
 
   describe '#initialize' do
+    it 'should use the given records' do
+      relation = described_class.new(model_class, records[1..3])
+
+      expect(relation).to match_array(records[1..3])
+    end
+
+    it 'should prefer the given records over the ones from the model class' do
+      allow(model_class).to receive(:records).and_return(records)
+
+      relation = described_class.new(model_class, records[1..3])
+
+      expect(relation).to match_array(records[1..3])
+    end
+
+    it 'should use the records from the model class when none are given' do
+      allow(model_class).to receive(:records).and_return(records)
+
+      relation = described_class.new(model_class)
+
+      expect(relation).to match_array(records)
+    end
+
     it 'should default to an empty array when no records are given' do
-      expect(described_class.new(model_class, nil).to_a).to eq([])
+      relation = described_class.new(model_class, nil)
+
+      expect(relation).to match_array([])
     end
 
     it 'should default to an empty array when the model does not respond to records' do
-      expect(described_class.new(model_class).to_a).to eq([])
-    end
+      relation = described_class.new(model_class)
 
-    it 'should attempt to load the records from the model' do
-      allow(model_class).to receive(:records).and_return(records)
-
-      expect(described_class.new(model_class).to_a).to eq(records)
+      expect(relation).to match_array([])
     end
   end
 
