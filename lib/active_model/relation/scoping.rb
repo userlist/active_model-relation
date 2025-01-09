@@ -7,33 +7,17 @@ module ActiveModel
 
       module ClassMethods
         def current_scope
-          ScopeRegistry.current_scope(self)
+          Registry.scopes[name]
         end
 
         def current_scope=(value)
-          ScopeRegistry.set_current_scope(self, value)
+          Registry.scopes.store(name, value)
         end
       end
 
-      class ScopeRegistry
-        class << self
-          delegate :current_scope, :set_current_scope, to: :instance
-
-          def instance
-            ActiveSupport::IsolatedExecutionState[:active_model_scope_registry] ||= new
-          end
-        end
-
-        def initialize
-          @current_scope = {}
-        end
-
-        def current_scope(model)
-          @current_scope[model.name]
-        end
-
-        def set_current_scope(model, value)
-          @current_scope[model.name] = value
+      class Registry
+        def self.scopes
+          ActiveSupport::IsolatedExecutionState[:active_model_relation_scope_registry] ||= {}
         end
       end
     end
